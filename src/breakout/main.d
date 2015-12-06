@@ -9,13 +9,14 @@ import gfm.logger;
 import gfm.sdl2;
 
 import breakout.paddle;
+import breakout.ball;
 
 enum WIDTH = 800;
 enum HEIGHT = 600;
 
 struct Time
 {
-    private size_t ticksPerSecond;
+    immutable real deltaTime;
     private SysTime lastTick;
     private Duration tickDelay;
     private SysTime lastFPS;
@@ -23,9 +24,10 @@ struct Time
     
     this(size_t ticksPerSecond)
     {
-        this.ticksPerSecond = ticksPerSecond;
+        auto timeMilliseconds = 1000.0L / ticksPerSecond;
+        deltaTime = timeMilliseconds / 100;
         lastTick = lastFPS = Clock.currTime;
-        tickDelay = msecs(cast(long)(1000.0L / ticksPerSecond));
+        tickDelay = msecs(cast(long)timeMilliseconds);
     }
     
     void frame(scope SDL2Window window)
@@ -71,6 +73,7 @@ void main()
     );
     auto time = Time(60);
     auto paddle = Paddle(HEIGHT);
+    auto ball = Ball(WIDTH, HEIGHT);
     
     window.setTitle("Breakout");
     
@@ -82,6 +85,7 @@ void main()
         if(time.tick)
         {
             paddle.update(sdl.mouse);
+            ball.update(time.deltaTime);
         }
         
         if(sdl.keyboard.testAndRelease(SDLK_ESCAPE))
@@ -91,6 +95,7 @@ void main()
         renderer.clear;
         renderer.setColor(255, 255, 255);
         paddle.render(renderer);
+        ball.render(renderer);
         renderer.present;
     }
 }
