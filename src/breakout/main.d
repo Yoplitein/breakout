@@ -14,6 +14,7 @@ import gfm.math;
 import breakout.ball;
 import breakout.brick;
 import breakout.paddle;
+import breakout.text;
 
 SDL2 sdl;
 SDL2Renderer renderer;
@@ -72,6 +73,7 @@ void main()
     sharedLog = new ConsoleLogger;
     auto sdl = scoped!SDL2(sharedLog);
     .sdl = sdl;
+    auto sdlTTF = scoped!SDLTTF(sdl);
     auto window = scoped!SDL2Window(
         sdl,
         SDL_WINDOWPOS_CENTERED, 35,
@@ -104,6 +106,8 @@ void main()
     }
     
     window.setTitle("Breakout");
+    textInit(sdlTTF, WIDTH, HEIGHT);
+    scope(exit) textFini;
     reset;
     
     while(!sdl.wasQuitRequested)
@@ -194,6 +198,7 @@ void main()
             );
         }
         
+        textRender(renderer, "test");
         renderer.present;
     }
 }
