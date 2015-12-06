@@ -1,6 +1,8 @@
 module breakout.ball;
 
+import std.range;
 import std.experimental.logger;
+import std.math;
 import std.typecons;
 
 import gfm.math;
@@ -8,7 +10,7 @@ import gfm.sdl2;
 
 struct Ball
 {
-    enum radius = 25;
+    enum diameter = 50;
     enum pixelsPerSecond = 30;
     SDL2Texture ballTexture;
     vec2f position;
@@ -22,7 +24,12 @@ struct Ball
         this.height = height;
         position = vec2i(width / 2, height / 2);
         velocity = vec2i(1, 1);
-        ballTexture = generateBallTexture(radius);
+        ballTexture = generateBallTexture(diameter);
+    }
+    
+    ~this()
+    {
+        ballTexture.destroy;
     }
     
     void update(real deltaTime)
@@ -44,20 +51,72 @@ struct Ball
     
     void render(scope SDL2Renderer renderer)
     {
-        enum halfRadius = radius / 2;
-        
-        renderer.fillRect(
-            cast(int)position.x - halfRadius,
-            cast(int)position.y - halfRadius,
-            radius,
-            radius,
+        enum radius = diameter / 2;
+        const srcRect = SDL_Rect(
+            0, 0,
+            diameter, diameter,
         );
+        const dstRect = SDL_Rect(
+            cast(int)position.x - radius,
+            cast(int)position.y - radius,
+            diameter,
+            diameter,
+        );
+        
+        renderer.copy(ballTexture, srcRect, dstRect);
     }
 }
 
-SDL2Texture generateBallTexture(int radius)
+SDL2Texture generateBallTexture(int diameter)
 {
-    //auto surface = scoped!SDL2Surface(sdl, ); //crap
-    //auto renderer = scoped!SDL2Renderer(surface);
-    return null;
+    import breakout.main: sdl, renderer;
+    
+    int bitDepth;
+    uint redMask;
+    uint greenMask;
+    uint blueMask;
+    uint alphaMask;
+    
+    SDL_PixelFormatEnumToMasks(
+        SDL_PIXELFORMAT_RGBA8888,
+        &bitDepth,
+        &redMask,
+        &greenMask,
+        &blueMask,
+        &alphaMask,
+    );
+    
+    auto surface = scoped!SDL2Surface(
+        sdl,
+        diameter, //width
+        diameter, //height
+        bitDepth,
+        redMask,
+        greenMask,
+        blueMask,
+        alphaMask,
+    );
+    auto ballRenderer = scoped!SDL2Renderer(surface);
+    SDL2Texture result = new SDL2Texture(
+        renderer,
+        SDL_PIXELFORMAT_RGBA8888,
+        SDL_TEXTUREACCESS_STATIC,
+        diameter, //width
+        diameter, //height
+    );
+    auto radius = diameter / 2;
+    
+    ballRenderer.setColor(255, 255, 255);
+    
+    foreach(degree; iota(0, 360, 1.0L))
+    {
+        auto x = radius + cast(int)(radius * cos(degree.radians) / 2.0L);
+        auto y = radius + cast(int)(radius * sin(degree.radians) / 2.0L);
+        
+        ballRenderer.drawLine(radius, radius, x, y);
+    }
+    
+    result.updateTexture(surface.pixels, surface.pitch);
+    
+    return result;
 }
