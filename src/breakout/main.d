@@ -109,6 +109,12 @@ void main()
         if(sdl.keyboard.testAndRelease(SDLK_ESCAPE))
             break;
         
+        if(sdl.keyboard.testAndRelease(SDLK_g))
+        {
+            ball.position = vec2f(WIDTH / 2, HEIGHT / 2);
+            ball.velocity = (1, 1);
+        }
+        
         renderer.setColor(0, 0, 0);
         renderer.clear;
         

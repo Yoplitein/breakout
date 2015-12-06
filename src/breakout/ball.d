@@ -23,6 +23,7 @@ struct Ball
     int width;
     int height;
     BoundingBox boundingBox;
+    bool outOfBounds;
     
     this(int width, int height)
     {
@@ -54,12 +55,20 @@ struct Ball
             velocity.y = 1;
         
         if(position.y > height)
-            velocity.y = -1; //TODO: game over (or something)
+        {
+            outOfBounds = true;
+            
+            return;
+        }
         
         updateBoundingBox;
         
         if(destroyBricks(bricks))
             velocity.y *= -1;
+        
+        if(velocity.y == 1 && close(paddle.boundingBox))
+            if(boundingBox.intersects(paddle.boundingBox))
+                velocity.y *= -1;
     }
     
     void updateBoundingBox()
@@ -77,7 +86,7 @@ struct Ball
     bool destroyBricks(ref Brick[] bricks)
     {
         auto relevant = bricks
-            .filter!(brick => brick.boundingBox.distance(boundingBox) <= diameter)
+            .filter!(brick => close(brick.boundingBox))
         ;
         bool hitAny = false;
         
@@ -91,6 +100,11 @@ struct Ball
         }
         
         return hitAny;
+    }
+    
+    bool close(BoundingBox box)
+    {
+        return box.distance(boundingBox) <= diameter;
     }
     
     void render(scope SDL2Renderer renderer)
