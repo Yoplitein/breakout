@@ -38,7 +38,7 @@ struct Brick
             vec3i(0, 0, 255),
             vec3i(255, 255, 0),
             vec3i(0, 255, 255),
-            vec3i(255, 0, 255),
+            //vec3i(255, 0, 255),
         ];
         
         return colors[colorIndex++ % $];

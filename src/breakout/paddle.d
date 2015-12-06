@@ -26,8 +26,8 @@ struct Paddle
         boundingBox = BoundingBox(
             position.x - halfWidth,
             position.y - height,
-            position.x + width,
-            position.y + height,
+            position.x + halfWidth,
+            position.y,
         );
     }
     

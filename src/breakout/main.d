@@ -86,6 +86,7 @@ void main()
     auto paddle = Paddle(HEIGHT);
     auto ball = Ball(WIDTH, HEIGHT);
     Brick[] bricks;
+    bool renderBoundingBoxes;
     
     window.setTitle("Breakout");
     placeBricks(bricks);
@@ -115,6 +116,9 @@ void main()
             ball.velocity = (1, 1);
         }
         
+        if(sdl.keyboard.testAndRelease(SDLK_b))
+            renderBoundingBoxes = !renderBoundingBoxes;
+        
         renderer.setColor(0, 0, 0);
         renderer.clear;
         
@@ -124,6 +128,33 @@ void main()
         ball.render(renderer);
         renderer.setColor(255, 255, 255);
         paddle.render(renderer);
+        
+        if(renderBoundingBoxes)
+        {
+            renderer.setColor(255, 0, 255);
+            
+            foreach(brick; bricks)
+                renderer.drawRect(
+                    cast(int)brick.boundingBox.min.x,
+                    cast(int)brick.boundingBox.min.y,
+                    cast(int)brick.boundingBox.width,
+                    cast(int)brick.boundingBox.height,
+                );
+            
+            renderer.drawRect(
+                cast(int)ball.boundingBox.min.x,
+                cast(int)ball.boundingBox.min.y,
+                cast(int)ball.boundingBox.width,
+                cast(int)ball.boundingBox.height,
+            );
+            renderer.drawRect(
+                cast(int)paddle.boundingBox.min.x,
+                cast(int)paddle.boundingBox.min.y,
+                cast(int)paddle.boundingBox.width,
+                cast(int)paddle.boundingBox.height,
+            );
+        }
+        
         renderer.present;
     }
 }

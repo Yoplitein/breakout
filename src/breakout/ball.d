@@ -16,6 +16,7 @@ import breakout;
 struct Ball
 {
     enum diameter = 50;
+    enum radius = diameter / 2;
     enum pixelsPerSecond = 30;
     SDL2Texture ballTexture;
     vec2f position;
@@ -73,13 +74,14 @@ struct Ball
     
     void updateBoundingBox()
     {
+        enum halfRadius = radius / 2;
         const boxLimit = vec2f(diameter, diameter);
         
         boundingBox = BoundingBox(
-            position.x,
-            position.y,
-            position.x + diameter,
-            position.y + diameter,
+            position.x - halfRadius,
+            position.y - halfRadius,
+            position.x + halfRadius,
+            position.y + halfRadius,
         );
     }
     
@@ -109,7 +111,6 @@ struct Ball
     
     void render(scope SDL2Renderer renderer)
     {
-        enum radius = diameter / 2;
         const srcRect = SDL_Rect(
             0, 0,
             diameter, diameter,
