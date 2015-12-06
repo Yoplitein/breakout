@@ -104,13 +104,14 @@ void main()
         
         renderer.setColor(0, 0, 0);
         renderer.clear;
-        renderer.setColor(255, 255, 255);
-        paddle.render(renderer);
-        ball.render(renderer);
         
         foreach(brick; bricks)
             brick.render(renderer);
         
+        renderer.setColor(255, 0, 0);
+        ball.render(renderer);
+        renderer.setColor(255, 255, 255);
+        paddle.render(renderer);
         renderer.present;
     }
 }
