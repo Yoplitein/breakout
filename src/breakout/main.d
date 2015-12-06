@@ -22,6 +22,7 @@ private:
 
 enum WIDTH = 800;
 enum HEIGHT = 600;
+enum TICKS_PER_SECOND = 60;
 
 struct Time
 {
@@ -82,7 +83,7 @@ void main()
         SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC,
     );
     .renderer = renderer;
-    auto time = Time(60);
+    auto time = Time(TICKS_PER_SECOND);
     auto paddle = Paddle(HEIGHT);
     auto ball = Ball(WIDTH, HEIGHT);
     Brick[] bricks;
@@ -112,7 +113,7 @@ void main()
                 
                 ball.deadTicks++;
                 
-                if(ball.deadTicks > 60) //TODO: enum TPS
+                if(ball.deadTicks > TICKS_PER_SECOND)
                     ball.reset;
             }
         }
