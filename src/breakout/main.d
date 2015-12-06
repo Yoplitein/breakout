@@ -198,7 +198,11 @@ void main()
             );
         }
         
-        textRender(renderer, "test");
+        if(dead)
+            textRender(renderer, "Game over");
+        else if(ball.outOfBounds)
+            textRender(renderer, "%s lives left".format(lives));
+        
         renderer.present;
     }
 }
