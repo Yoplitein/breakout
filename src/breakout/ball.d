@@ -25,6 +25,8 @@ struct Ball
         position = vec2i(width / 2, height / 2);
         velocity = vec2i(1, 1);
         ballTexture = generateBallTexture(diameter);
+        
+        ballTexture.setColorMod(255, 0, 0);
     }
     
     ~this()
@@ -106,7 +108,9 @@ SDL2Texture generateBallTexture(int diameter)
     );
     auto radius = diameter / 2;
     
-    ballRenderer.setColor(255, 255, 255);
+    ballRenderer.setColor(0, 0, 0, 0);
+    ballRenderer.clear;
+    ballRenderer.setColor(255, 255, 255, 255);
     
     foreach(degree; iota(0, 360, 1.0L))
     {
@@ -116,6 +120,7 @@ SDL2Texture generateBallTexture(int diameter)
         ballRenderer.drawLine(radius, radius, x, y);
     }
     
+    result.setBlendMode(SDL_BLENDMODE_BLEND);
     result.updateTexture(surface.pixels, surface.pitch);
     
     return result;

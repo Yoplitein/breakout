@@ -108,7 +108,6 @@ void main()
         foreach(brick; bricks)
             brick.render(renderer);
         
-        renderer.setColor(255, 0, 0);
         ball.render(renderer);
         renderer.setColor(255, 255, 255);
         paddle.render(renderer);
