@@ -8,6 +8,8 @@ import std.typecons;
 import gfm.logger;
 import gfm.sdl2;
 
+import breakout.paddle;
+
 enum WIDTH = 800;
 enum HEIGHT = 600;
 
@@ -68,6 +70,7 @@ void main()
         SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC,
     );
     auto time = Time(60);
+    auto paddle = Paddle(HEIGHT);
     
     window.setTitle("Breakout");
     
@@ -77,15 +80,17 @@ void main()
         time.frame(window);
         
         if(time.tick)
-            infof("tick at %s", Clock.currTime);
+        {
+            paddle.update(sdl.mouse);
+        }
         
         if(sdl.keyboard.testAndRelease(SDLK_ESCAPE))
             break;
         
         renderer.setColor(0, 0, 0);
         renderer.clear;
-        renderer.setColor(255, 0, 255);
-        renderer.fillRect(100, 100, 100, 100);
+        renderer.setColor(255, 255, 255);
+        paddle.render(renderer);
         renderer.present;
     }
 }
