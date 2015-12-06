@@ -5,6 +5,8 @@ import std.experimental.logger;
 import gfm.math;
 import gfm.sdl2;
 
+import breakout;
+
 struct Brick
 {
     enum height = 8;
@@ -13,12 +15,19 @@ struct Brick
     vec2i position;
     bool broken;
     vec3i color;
+    BoundingBox boundingBox;
     
     this(int width, vec2i position)
     {
         this.width = width;
         this.position = position;
         color = nextColor;
+        boundingBox = BoundingBox(
+            position.x,
+            position.y,
+            position.x + width,
+            position.y + height,
+        );
     }
     
     static vec3i nextColor()

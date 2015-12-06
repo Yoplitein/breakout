@@ -1,12 +1,17 @@
 module breakout.ball;
 
-import std.range;
+import std.algorithm;
 import std.experimental.logger;
 import std.math;
+import std.range;
 import std.typecons;
 
 import gfm.math;
 import gfm.sdl2;
+
+import breakout.brick;
+import breakout.paddle;
+import breakout;
 
 struct Ball
 {
@@ -17,6 +22,7 @@ struct Ball
     vec2f velocity;
     int width;
     int height;
+    BoundingBox boundingBox;
     
     this(int width, int height)
     {
@@ -34,7 +40,7 @@ struct Ball
         ballTexture.destroy;
     }
     
-    void update(real deltaTime)
+    void update(real deltaTime, ref Paddle paddle, ref Brick[] bricks)
     {
         position += velocity * pixelsPerSecond * deltaTime;
         
@@ -48,7 +54,43 @@ struct Ball
             velocity.y = 1;
         
         if(position.y > height)
-            velocity.y = -1;
+            velocity.y = -1; //TODO: game over (or something)
+        
+        updateBoundingBox;
+        
+        if(destroyBricks(bricks))
+            velocity.y *= -1;
+    }
+    
+    void updateBoundingBox()
+    {
+        const boxLimit = vec2f(diameter, diameter);
+        
+        boundingBox = BoundingBox(
+            position.x,
+            position.y,
+            position.x + diameter,
+            position.y + diameter,
+        );
+    }
+    
+    bool destroyBricks(ref Brick[] bricks)
+    {
+        auto relevant = bricks
+            .filter!(brick => brick.boundingBox.distance(boundingBox) <= diameter)
+        ;
+        bool hitAny = false;
+        
+        foreach(ref brick; relevant)
+        {
+            if(!boundingBox.intersects(brick.boundingBox))
+                continue;
+            
+            hitAny = true;
+            brick.broken = true;
+        }
+        
+        return hitAny;
     }
     
     void render(scope SDL2Renderer renderer)

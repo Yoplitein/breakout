@@ -1,5 +1,7 @@
 module breakout.main;
 
+import std.algorithm;
+import std.array;
 import std.datetime;
 import std.experimental.logger;
 import std.string;
@@ -96,7 +98,12 @@ void main()
         if(time.tick)
         {
             paddle.update(sdl.mouse);
-            ball.update(time.deltaTime);
+            ball.update(time.deltaTime, paddle, bricks);
+            
+            bricks = bricks
+                .filter!(brick => !brick.broken)
+                .array
+            ;
         }
         
         if(sdl.keyboard.testAndRelease(SDLK_ESCAPE))
