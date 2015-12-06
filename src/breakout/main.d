@@ -7,9 +7,11 @@ import std.typecons;
 
 import gfm.logger;
 import gfm.sdl2;
+import gfm.math;
 
-import breakout.paddle;
 import breakout.ball;
+import breakout.brick;
+import breakout.paddle;
 
 SDL2 sdl;
 SDL2Renderer renderer;
@@ -81,6 +83,9 @@ void main()
     auto time = Time(60);
     auto paddle = Paddle(HEIGHT);
     auto ball = Ball(WIDTH, HEIGHT);
+    Brick[] bricks = [
+        Brick(32, vec2i(100, 100)),
+    ];
     
     window.setTitle("Breakout");
     
@@ -103,6 +108,10 @@ void main()
         renderer.setColor(255, 255, 255);
         paddle.render(renderer);
         ball.render(renderer);
+        
+        foreach(brick; bricks)
+            brick.render(renderer);
+        
         renderer.present;
     }
 }
