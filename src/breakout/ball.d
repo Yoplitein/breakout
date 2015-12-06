@@ -25,21 +25,29 @@ struct Ball
     int height;
     BoundingBox boundingBox;
     bool outOfBounds;
+    int deadTicks;
     
     this(int width, int height)
     {
         this.width = width;
         this.height = height;
-        position = vec2i(width / 2, height / 2);
-        velocity = vec2i(1, 1);
         ballTexture = generateBallTexture(diameter);
         
         ballTexture.setColorMod(255, 0, 0);
+        reset;
     }
     
     ~this()
     {
         ballTexture.destroy;
+    }
+    
+    void reset()
+    {
+        position = vec2i(width / 2, height / 2);
+        velocity = vec2i(1, 1);
+        outOfBounds = false;
+        deadTicks = 0;
     }
     
     void update(real deltaTime, ref Paddle paddle, ref Brick[] bricks)

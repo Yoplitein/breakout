@@ -105,6 +105,16 @@ void main()
                 .filter!(brick => !brick.broken)
                 .array
             ;
+            
+            if(ball.outOfBounds)
+            {
+                //TODO: lives
+                
+                ball.deadTicks++;
+                
+                if(ball.deadTicks > 60) //TODO: enum TPS
+                    ball.reset;
+            }
         }
         
         if(sdl.keyboard.testAndRelease(SDLK_ESCAPE))
