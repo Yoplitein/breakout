@@ -88,9 +88,23 @@ void main()
     auto ball = Ball(WIDTH, HEIGHT);
     Brick[] bricks;
     bool renderBoundingBoxes;
+    int lives;
+    bool dead;
+    int deadTicks;
+    
+    void reset()
+    {
+        bricks.length = 0;
+        lives = 3;
+        dead = false;
+        deadTicks = 0;
+        
+        placeBricks(bricks);
+        ball.reset;
+    }
     
     window.setTitle("Breakout");
-    placeBricks(bricks);
+    reset;
     
     while(!sdl.wasQuitRequested)
     {
@@ -99,7 +113,7 @@ void main()
         
         if(time.tick)
         {
-            paddle.update(sdl.mouse);
+            if(!dead) paddle.update(sdl.mouse);
             ball.update(time.deltaTime, paddle, bricks);
             
             bricks = bricks
@@ -107,14 +121,28 @@ void main()
                 .array
             ;
             
-            if(ball.outOfBounds)
+            if(!dead && ball.outOfBounds)
             {
-                //TODO: lives
+                if(ball.deadTicks == 0)
+                {
+                    lives -= 1;
+                    
+                    if(lives == 0)
+                        dead = true;
+                }
                 
                 ball.deadTicks++;
                 
                 if(ball.deadTicks > TICKS_PER_SECOND)
                     ball.reset;
+            }
+            
+            if(dead)
+            {
+                deadTicks++;
+                
+                if(deadTicks > TICKS_PER_SECOND * 5)
+                    reset;
             }
         }
         
