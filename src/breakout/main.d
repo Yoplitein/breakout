@@ -11,6 +11,11 @@ import gfm.sdl2;
 import breakout.paddle;
 import breakout.ball;
 
+SDL2 sdl;
+SDL2Renderer renderer;
+
+private:
+
 enum WIDTH = 800;
 enum HEIGHT = 600;
 
@@ -61,6 +66,7 @@ void main()
 {
     sharedLog = new ConsoleLogger;
     auto sdl = scoped!SDL2(sharedLog);
+    .sdl = sdl;
     auto window = scoped!SDL2Window(
         sdl,
         SDL_WINDOWPOS_CENTERED, 35,
@@ -71,6 +77,7 @@ void main()
         window,
         SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC,
     );
+    .renderer = renderer;
     auto time = Time(60);
     auto paddle = Paddle(HEIGHT);
     auto ball = Ball(WIDTH, HEIGHT);
