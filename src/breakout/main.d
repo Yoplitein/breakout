@@ -83,11 +83,10 @@ void main()
     auto time = Time(60);
     auto paddle = Paddle(HEIGHT);
     auto ball = Ball(WIDTH, HEIGHT);
-    Brick[] bricks = [
-        Brick(32, vec2i(100, 100)),
-    ];
+    Brick[] bricks;
     
     window.setTitle("Breakout");
+    placeBricks(bricks);
     
     while(!sdl.wasQuitRequested)
     {
@@ -113,5 +112,29 @@ void main()
             brick.render(renderer);
         
         renderer.present;
+    }
+}
+
+void placeBricks(ref Brick[] bricks)
+{
+    enum brickWidth = 32;
+    enum halfBrickWidth = brickWidth / 2;
+    enum columns = WIDTH / brickWidth;
+    enum columnStride = brickWidth + 1;
+    enum rows = cast(int)(HEIGHT * 0.35L) / Brick.height;
+    enum rowStride = Brick.height + 1;
+    
+    foreach(row; 0 .. rows)
+    {
+        bool evenRow = row % 2 == 0;
+        
+        foreach(column; 0 .. columns)
+            bricks ~= Brick(
+                brickWidth,
+                vec2i(
+                    column * columnStride - (evenRow ? 0 : halfBrickWidth),
+                    row * rowStride,
+                ),
+            );
     }
 }
