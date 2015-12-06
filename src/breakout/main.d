@@ -55,7 +55,7 @@ struct Time
 
 void main()
 {
-	sharedLog = new ConsoleLogger;
+    sharedLog = new ConsoleLogger;
     auto sdl = scoped!SDL2(sharedLog);
     auto window = scoped!SDL2Window(
         sdl,
