@@ -1,0 +1,8 @@
+name "breakout"
+description "A minimal D application."
+copyright "Copyright © 2015, Steven"
+authors "Steven"
+
+dependency "gfm:logger" version="~>3.0.7"
+dependency "gfm:math" version="~>3.0.7"
+dependency "gfm:sdl2" version="~>3.0.7"

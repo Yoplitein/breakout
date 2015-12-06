@@ -1,0 +1,12 @@
+*.a
+*.dll
+*.exe
+*.lib
+*.o
+*.obj
+*.so
+*.sublime-*
+.dub
+/dub.selections.json
+__dummy.html
+docs.json
